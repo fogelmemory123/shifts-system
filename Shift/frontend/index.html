@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>מילוי משמרות</title>
+    <style>
+        body {
+            direction: rtl;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f7f7f7;
+        }
+
+        .navbar-brand img {
+            border-radius: 50%;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        #week-range {
+            display: block;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .week-navigation {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #previous-week-button,
+        #next-week-button,
+        #toggle-tables-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        #previous-week-button:hover,
+        #next-week-button:hover,
+        #toggle-tables-button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #333;
+            background: #fff;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        td:first-child {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #e9ecef;
+        }
+
+        .yellow {
+            color: #ffc107;
+        }
+
+        .table-container {
+            display: none;
+        }
+
+        .table-container.active {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+           table {
+    font-size: 10px;
+}
+
+
+
+table select,
+table input[type="text"] {
+    font-size: 8.5px;
+    padding: 0px;
+    width: auto;
+}
+#table2 td{
+    font-size:10px;
+}
+
+
+            th, td {
+                padding: 5px;
+            }
+
+            #previous-week-button, #next-week-button, #toggle-tables-button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"><img src="enter.jpg" width="50" height="50"></a>
+    <a class="navbar-brand" id="userName" href="#"></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+      <ul class="navbar-nav">
+        <!-- <li class="nav-item">
+          <a class="nav-link" href="show.html">לוח משמרות</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">מילוי משמרות</a>
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link" onclick="logout()">יציאה</a>
+        </li>  
+      </ul>
+    </div>
+  </div>
+</nav>
+<center>
+    <div class="container-fluid mt-3">
+        <h3>
+          דף מילוי משמרות
+        </h3>
+    </div>
+    <div class="container">
+        <span id="week-range"></span>
+        <div class="week-navigation">
+            <button id="previous-week-button"><i class="fas fa-chevron-left"></i></button>
+            <button id="next-week-button"><i class="fas fa-chevron-right"></i></button>
+            <button id="toggle-tables-button">החלף לטבלת משמרות</button>
+        </div>
+        <div id="table1" class="table-container active">
+            <table id="jewish-calendar">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-calendar-week"></i></th>
+                        <th id="y1">ראשון <i class="fas fa-sun yellow"></i></th>
+                        <th id="y2">שני    <i class="fas fa-sun yellow"></i></th>
+                        <th id="y3">שלישי <i class="fas fa-sun yellow"></i></th>
+                        <th id="y4">רביעי <i class="fas fa-sun yellow"></i></th>
+                        <th id="y5">חמישי <i class="fas fa-sun yellow"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Calendar rows will be added dynamically here -->
+                </tbody>
+            </table>
+        </div>
+        <div id="table2" class="table-container">
+            <table id="jewish-calendar2">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-calendar-week"></i></th>
+                        <th id="y1">ראשון <i class="fas fa-sun yellow"></i></th>
+                        <th id="y2">שני <i class="fas fa-sun yellow"></i></th>
+                        <th id="y3">שלישי <i class="fas fa-sun yellow"></i></th>
+                        <th id="y4">רביעי <i class="fas fa-sun yellow"></i></th>
+                        <th id="y5">חמישי <i class="fas fa-sun yellow"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Calendar rows will be added dynamically here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <script>
+        let currentTable = 1;
+        const apiUrl = "https://fogelmemory123.pythonanywhere.com";
+        let currentDate = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' }));
+        let weekStart = new Date(currentDate);
+        let weeker = 0;
+        var buttonsEnabled = true;
+
+        async function getUserName() {
+            const response = await fetch(apiUrl + "/getusername", {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token') // Adjust this if your token is stored elsewhere
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Username:', data.username);
+                document.getElementById("userName").innerHTML = data.username
+            } else {
+                console.error('Failed to retrieve username:', response.statusText);
+            }
+        }
+
+        // Call the function to get the username
+  
+
+        document.getElementById('toggle-tables-button').addEventListener('click', function() {
+            if (currentTable === 1) {
+                document.getElementById('table1').classList.remove('active');
+                document.getElementById('table2').classList.add('active');
+                currentTable = 2;
+                document.getElementById('toggle-tables-button').innerText = 'החלף לטבלת מילוי משמרות';
+                displayCurrentWeek();
+                displayALllUsers();
+            } else {
+                document.getElementById('table1').classList.add('active');
+                document.getElementById('table2').classList.remove('active');
+                currentTable = 1;
+                document.getElementById('toggle-tables-button').innerText = 'החלף לטבלת משמרות';
+                displayCurrentWeek();
+                displayALllUsers();
+            }
+        });
+
+        async function fetchShifts() {
+            const jwt = localStorage.getItem('token');
+            try {
+                const response = await fetch(apiUrl + '/getshifts', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${jwt}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const responseData = await response.json();
+                return responseData.data;
+            } catch (error) {
+                console.error('Error:', error);
+                return [];
+            }
+        }
+
+        async function fetchAllShifts() {
+            const jwt = localStorage.getItem('token');
+            try {
+                const response = await fetch(apiUrl + '/getallshifts', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${jwt}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const responseData = await response.json();
+                return responseData.data;
+            } catch (error) {
+                console.error('Error:', error);
+                return [];
+            }
+        }
+
+        async function displayCurrentWeek() {
+            const token = localStorage.getItem('token');
+        if (!token) {
+            // If no token is found, redirect to the login page
+            window.location.href = 'login.html';
+        } else {
+            // Call the function to get the username
+            getUserName();
+        }
+            const shifts = await fetchShifts();
+            const tableBody = document.querySelector('#jewish-calendar tbody');
+
+            // Adjust for Sunday as the start of the week
+            const day = weekStart.getDay();
+            const diff = (day === 0 ? 0 : -day); // Sunday (0) should map to 0, Monday (1) should map to -1, etc.
+            weekStart.setDate(weekStart.getDate() + diff);
+
+            tableBody.innerHTML = ''; // Clear table body
+
+            let row1InnerHtmlMorning = '<td>משמרת בוקר</td>';
+            let row1InnerHtmlAfternoon = '<td>משמרת צהריים</td>';
+
+            // Loop through each day of the week
+            for (let i = 0; i < 5; i++) { // Only Sunday to Thursday
+                const dayDate = new Date(weekStart);
+                dayDate.setDate(weekStart.getDate() + i);
+
+                const formattedDate = `${dayDate.getDate()}/${dayDate.getMonth() + 1}/${dayDate.getFullYear()}`;
+                const shiftMorning = shifts.find(shift => shift.date === formattedDate && shift.shiftType === 'morning');
+                const shiftAfternoon = shifts.find(shift => shift.date === formattedDate && shift.shiftType === 'afternoon');
+
+                row1InnerHtmlMorning += `
+                    <td>
+                        <select onchange="sendShiftData(this, '${formattedDate}', 'morning')">
+                            <option value=""></option>
+                            <option value="בית" ${shiftMorning && shiftMorning.location === 'בית' ? 'selected' : ''}>בית</option>
+                            <option value="סטודיו" ${shiftMorning && shiftMorning.location === 'סטודיו' ? 'selected' : ''}>סטודיו</option>
+                        </select>
+                        <input type="hidden" value="${formattedDate}">
+                    </td>
+                `;
+
+                row1InnerHtmlAfternoon += `
+                    <td>
+                        <select onchange="sendShiftData(this, '${formattedDate}', 'afternoon')">
+                            <option value=""></option>
+                            <option value="בית" ${shiftAfternoon && shiftAfternoon.location === 'בית' ? 'selected' : ''}>בית</option>
+                            <option value="סטודיו" ${shiftAfternoon && shiftAfternoon.location === 'סטודיו' ? 'selected' : ''}>סטודיו</option>
+                        </select>
+                        <input type="hidden" value="${formattedDate}">
+                    </td>
+                `;
+            }
+
+            // Create rows for each day of the week
+            const rowDate = document.createElement('tr');
+            rowDate.innerHTML = `
+                <td>תאריך</td>
+                <td id="day1">${new Date(weekStart.getTime()).getDate()}</td>
+                <td id="day2">${new Date(weekStart.getTime() + (1 * 24 * 60 * 60 * 1000)).getDate()}</td>
+                <td id="day3">${new Date(weekStart.getTime() + (2 * 24 * 60 * 60 * 1000)).getDate()}</td>
+                <td id="day4">${new Date(weekStart.getTime() + (3 * 24 * 60 * 60 * 1000)).getDate()}</td>
+                <td id="day5">${new Date(weekStart.getTime() + (4 * 24 * 60 * 60 * 1000)).getDate()}</td>
+            `;
+
+            const rowMorningShift = document.createElement('tr');
+            rowMorningShift.innerHTML = row1InnerHtmlMorning; // Populate the row with morning shift HTML
+
+            const rowAfternoonShift = document.createElement('tr');
+            rowAfternoonShift.innerHTML = row1InnerHtmlAfternoon; // Populate the row with afternoon shift HTML
+
+            // Append rows to the table body
+            tableBody.appendChild(rowDate); // Append date row first
+            tableBody.appendChild(rowMorningShift); // Append morning shift row
+            tableBody.appendChild(rowAfternoonShift); // Append afternoon shift row
+
+            const currentDate12 = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' }));
+            const dayIds = ["day1", "day2", "day3", "day4", "day5"];
+            dayIds.forEach((dayId, index) => {
+                const dayElement = document.getElementById(dayId);
+                const dayElementDate = parseInt(dayElement.innerHTML, 10);
+                const dayElementFullDate = new Date(weekStart.getTime() + (index * 24 * 60 * 60 * 1000));
+                if (dayElementDate === currentDate12.getDate() &&
+                    dayElementFullDate.getMonth() === currentDate12.getMonth() &&
+                    dayElementFullDate.getFullYear() === currentDate12.getFullYear()) {
+                    dayElement.classList.add('highlight');
+                } else {
+                    dayElement.classList.remove('highlight');
+                }
+            });
+
+            // Display the week range above the table
+            const firstDayOfWeek = new Date(currentDate);
+            firstDayOfWeek.setDate(firstDayOfWeek.getDate() - firstDayOfWeek.getDay()); // Get first day of the week (Sunday)
+            const lastDayOfWeek = new Date(firstDayOfWeek);
+            lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 4); // Get last day of the week (Thursday)
+            const weekRangeElement = document.getElementById('week-range');
+            weekRangeElement.textContent = `${firstDayOfWeek.getDate()}.${firstDayOfWeek.getMonth() + 1}.${firstDayOfWeek.getFullYear()} - ${lastDayOfWeek.getDate()}.${lastDayOfWeek.getMonth() + 1}.${lastDayOfWeek.getFullYear()}`;
+        }
+
+        async function displayALllUsers() {
+            const shifts = await fetchAllShifts(); // Fetch shift data
+            const tableBody = document.querySelector('#jewish-calendar2 tbody');
+
+            // Adjust for Sunday as the start of the week
+            const day = weekStart.getDay();
+            const diff = (day === 0 ? 0 : -day); // Sunday (0) should map to 0, Monday (1) should map to -1, etc.
+            weekStart.setDate(weekStart.getDate() + diff);
+
+            tableBody.innerHTML = ''; // Clear table body
+
+            let row1InnerHtmlMorning = '<td>משמרת בוקר</td>';
+            let row1InnerHtmlAfternoon = '<td>משמרת צהריים</td>';
+
+            // Create a map to group usernames by date and shift type
+            const shiftMap = {};
+            shifts.forEach(shift => {
+                const shiftDate = shift.date;
+                const shiftType = shift.shiftType;
+                const username = shift.username; // Assuming username is included in the shift data
+                const location = shift.location;
+                if (!shiftMap[shiftDate]) {
+                    shiftMap[shiftDate] = { morning: [], afternoon: [] };
+                }
+
+                if (location === 'סטודיו' || location === 'בית') {
+                    shiftMap[shiftDate][shiftType].push(username);
+                }
+            });
+
+            // Loop through each day of the week
+            for (let i = 0; i < 5; i++) { // Only Sunday to Thursday
+                const dayDate = new Date(weekStart);
+                dayDate.setDate(weekStart.getDate() + i);
+
+                const formattedDate = `${dayDate.getDate()}/${dayDate.getMonth() + 1}/${dayDate.getFullYear()}`;
+                const morningUsers = (shiftMap[formattedDate] && shiftMap[formattedDate].morning) || [];
+                const afternoonUsers = (shiftMap[formattedDate] && shiftMap[formattedDate].afternoon) || [];
+
+                // Only add rows if there are relevant shifts
+                if (morningUsers.length || afternoonUsers.length) {
+                    row1InnerHtmlMorning += `
+                        <td>
+                            ${morningUsers.length ? morningUsers.join('<br>') : ''}
+                            <input type="hidden" value="${formattedDate}">
+                        </td>
+                    `;
+
+                    row1InnerHtmlAfternoon += `
+                        <td>
+                            ${afternoonUsers.length ? afternoonUsers.join('<br>') : ''}
+                            <input type="hidden" value="${formattedDate}">
+                        </td>
+                    `;
+                } else {
+                    row1InnerHtmlMorning += '<td></td>';
+                    row1InnerHtmlAfternoon += '<td></td>';
+                }
+            }
+
+            // Create rows for each day of the week
+            const rowDate = document.createElement('tr');
+            rowDate.innerHTML = `
+                <td>תאריך</td>
+                <td id="day1">${new Date(weekStart.getTime()).getDate()}</td>
+                <td id="day2">${new Date(weekStart.getTime() + (1 * 24 * 60 * 60 * 1000)).getDate()}</td>
+                <td id="day3">${new Date(weekStart.getTime() + (2 * 24 * 60 * 60 * 1000)).getDate()}</td>
+                <td id="day4">${new Date(weekStart.getTime() + (3 * 24 * 60 * 60 * 1000)).getDate()}</td>
+                <td id="day5">${new Date(weekStart.getTime() + (4 * 24 * 60 * 60 * 1000)).getDate()}</td>
+            `;
+
+            const rowMorningShift = document.createElement('tr');
+            rowMorningShift.innerHTML = row1InnerHtmlMorning; // Populate the row with morning shift HTML
+
+            const rowAfternoonShift = document.createElement('tr');
+            rowAfternoonShift.innerHTML = row1InnerHtmlAfternoon; // Populate the row with afternoon shift HTML
+
+            // Append rows to the table body
+            tableBody.appendChild(rowDate); // Append date row first
+            tableBody.appendChild(rowMorningShift); // Append morning shift row
+            tableBody.appendChild(rowAfternoonShift); // Append afternoon shift row
+
+            // Highlight the current date
+            const currentDate12 = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' }));
+            const dayIds = ["day1", "day2", "day3", "day4", "day5"];
+            dayIds.forEach((dayId, index) => {
+                const dayElement = document.getElementById(dayId);
+                const dayElementDate = parseInt(dayElement.innerHTML, 10);
+                const dayElementFullDate = new Date(weekStart.getTime() + (index * 24 * 60 * 60 * 1000));
+                if (dayElementDate === currentDate12.getDate() &&
+                    dayElementFullDate.getMonth() === currentDate12.getMonth() &&
+                    dayElementFullDate.getFullYear() === currentDate12.getFullYear()) {
+                    dayElement.classList.add('highlight');
+                } else {
+                    dayElement.classList.remove('highlight');
+                }
+            });
+        }
+
+        async function sendShiftData(selectElement, date, shiftType) {
+            const selectedValue = selectElement.value;
+            const jwt = localStorage.getItem('token');
+            console.log(jwt)
+            const data = {
+                date: date,
+                shiftType: shiftType,
+                location: selectedValue
+            };
+
+            try {
+                const response = await fetch(apiUrl + '/addshift', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${jwt}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const responseData = await response.json();
+                console.log('Success:', responseData);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function logout() {
+            fetch(apiUrl+'/logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+                // Remove token from local storage
+                localStorage.removeItem('token');
+                // Redirect to login page or home page
+                window.location.href = 'login.html';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Event listeners for previous and next week buttons
+        document.getElementById('previous-week-button').addEventListener('click', previousWeek);
+        document.getElementById('next-week-button').addEventListener('click', nextWeek);
+
+        function previousWeek() {
+            if (!buttonsEnabled) return; // Exit function if buttons are disabled
+            disableButtons(); // Disable buttons to prevent double-click
+            weekStart.setDate(weekStart.getDate() - 7);
+            displayCurrentWeek();
+            displayALllUsers();
+        }
+
+        function nextWeek() {
+            if (!buttonsEnabled) return; // Exit function if buttons are disabled
+            disableButtons(); // Disable buttons to prevent double-click
+            weekStart.setDate(weekStart.getDate() + 7);
+            displayCurrentWeek();
+            displayALllUsers();
+        }
+
+        function disableButtons() {
+            buttonsEnabled = false;
+            setTimeout(function() {
+                buttonsEnabled = true;
+            }, 1000); // Enable buttons after 1 second (adjust the time as needed)
+        }
+
+        // Initialize the calendar when the page loads
+        window.onload = function() {
+            displayCurrentWeek();
+            displayALllUsers();
+        };
+    </script>
+</body>
+</html>
